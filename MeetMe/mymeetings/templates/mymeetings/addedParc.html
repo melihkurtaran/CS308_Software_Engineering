@@ -1,0 +1,8 @@
+{% autoescape off %}
+Hi {{ user.username }},
+
+
+You can check details for your new meeting from below link, you can also vote for an option decided by creator:
+
+http://{{ domain }}{% url 'acceptInvite' uidb64=uid token=token %}
+{% endautoescape %}

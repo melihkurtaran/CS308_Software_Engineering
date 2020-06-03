@@ -1,0 +1,371 @@
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+
+  :root {
+    --color-green-1: #67DF9B;
+    --color-green-2: #20C4AE;
+  }
+
+  body {
+    background: linear-gradient(to bottom, var(--color-green-1), var(--color-green-2));
+    font-family: 'Muli';
+    height: 100vh;
+    margin: 0;
+  }
+
+  body {
+    font-family: Arial;
+    margin: 0 auto;
+    /* Center website */
+    max-width: 80vw;
+    /* Max width */
+    padding: 20px;
+  }
+
+  .heading {
+    font-size: 25px;
+    margin-right: 25px;
+  }
+
+  .fa {
+    font-size: 25px;
+  }
+
+  .checked {
+    color: orange;
+  }
+
+  /* Three column layout */
+  .side {
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .middle {
+    float: left;
+    width: 80%;
+    margin-top: 10px;
+  }
+
+  /* Place text to the right */
+  .right {
+    text-align: right;
+    width: 10%;
+  }
+
+  .row {
+    margin: 30px auto;
+    width: 500px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 6px;
+  }
+
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  /* The bar container */
+  .bar-container {
+    width: 100%;
+    background-color: #f1f1f1;
+    text-align: center;
+    color: white;
+  }
+
+  /* Individual bars */
+  .bar-5 {
+    width: 60%;
+    height: 18px;
+    background-color: #4CAF50;
+  }
+
+  .bar-4 {
+    width: 30%;
+    height: 18px;
+    background-color: #2196F3;
+  }
+
+  .bar-3 {
+    width: 10%;
+    height: 18px;
+    background-color: #00bcd4;
+  }
+
+  .bar-2 {
+    width: 4%;
+    height: 18px;
+    background-color: #ff9800;
+  }
+
+  .bar-1 {
+    width: 15%;
+    height: 18px;
+    background-color: #f44336;
+  }
+
+  .option-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    padding: 15px;
+    border: 1px solid #bbb;
+    margin-bottom: 10px;
+    background-color: white;
+  }
+
+  .option-container.selected-option:before {
+    background: linear-gradient(to bottom, var(--color-green-1), var(--color-green-2));
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+  }
+
+  .option-container.selected-option {
+    position: relative;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+
+  .btn {
+    background: linear-gradient(to right, var(--color-green-1), var(--color-green-2));
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 20px 25px;
+    letter-spacing: 0.5px;
+    line-height: 20px;
+    width: 100%;
+
+  }
+
+  .btn:active {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .btn:focus {
+    outline: none;
+  }
+
+  /* Responsive layout - make the columns stack on top of each other instead of next to each other */
+  @media (max-width: 400px) {
+
+    .side,
+    .middle {
+      width: 100%;
+    }
+
+    /* Hide the right column on small screens */
+    .right {
+      display: none;
+    }
+  }
+
+  /* Base for label styling */
+  [type="checkbox"]:not(:checked),
+  [type="checkbox"]:checked {
+    position: absolute;
+    left: -9999px;
+  }
+
+  /* [type="checkbox"]:not(:checked)+label,
+  [type="checkbox"]:checked+label {
+    position: relative;
+    padding-left: 1.95em;
+    cursor: pointer;
+  } */
+
+  /* checkbox aspect */
+  /* [type="checkbox"]:not(:checked)+label:before,
+  [type="checkbox"]:checked+label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid #ccc;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1);
+  } */
+
+  /* checked mark aspect */
+  /* [type="checkbox"]:not(:checked)+label:after,
+  [type="checkbox"]:checked+label:after {
+    content: '\2713\0020';
+    position: absolute;
+    top: .15em;
+    left: .22em;
+    font-size: 1.3em;
+    line-height: 0.8;
+    color: #09ad7e;
+    transition: all .2s;
+    font-family: 'Lucida Sans Unicode', 'Arial Unicode MS', Arial;
+  } */
+
+  /* checked mark aspect changes */
+  /* [type="checkbox"]:not(:checked)+label:after {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  [type="checkbox"]:checked+label:after {
+    opacity: 1;
+    transform: scale(1);
+  } */
+
+  /* disabled checkbox */
+  /* [type="checkbox"]:disabled:not(:checked)+label:before,
+  [type="checkbox"]:disabled:checked+label:before {
+    box-shadow: none;
+    border-color: #bbb;
+    background-color: #ddd;
+  }
+
+  [type="checkbox"]:disabled:checked+label:after {
+    color: #999;
+  }
+
+  [type="checkbox"]:disabled+label {
+    color: #aaa;
+  } */
+
+  /* accessibility */
+  /* [type="checkbox"]:checked:focus+label:before,
+  [type="checkbox"]:not(:checked):focus+label:before {
+    border: 2px dotted blue;
+  } */
+
+  /* hover style just for information */
+  /* label:hover:before {
+    border: 2px solid #4778d9 !important;
+  } */
+</style>
+
+
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<span class="heading">Survey for Meeting Time Options </span>
+
+<p></p>
+<hr style="border:3px solid #f1f1f1">
+
+<!--
+  <div class="row">
+    {% for option in options %}
+    <div class="option-container">
+      <div class="side">
+        <input type="checkbox" name="Option" id="option" value="{{ option.meetingEventID}}" />
+        <label class="option1" for="option">{{ option.start}}   {{option.end}}</label>
+      </div>
+      <div>
+        <div class="middle">
+          <div class="bar-container">
+            <div class="bar-5"></div>
+          </div>
+        </div>
+        <div class="side right">
+          <div>{{ option.voteNumber }}</div><br>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+-->
+
+<div class="row">
+  <div class="option-container">
+    <div class="side">
+      <input type="checkbox" name="Option 1" id="option1" value="1" />
+      <label class="option1" for="option1">May 3, 2020 7:30 a.m. to May 3, 2020 9.00 a.m.</label>
+    </div>
+    <div>
+      <div class="middle">
+        <div class="bar-container">
+          <div class="bar-5"></div>
+        </div>
+      </div>
+      <div class="side right">
+        <div>400</div><br>
+      </div>
+    </div>
+  </div>
+  <div class="option-container">
+    <div class="side">
+      <input type="checkbox" name="Option 2" id="option2" value="2" />
+      <label for="option2">May 3, 2020 11:30 a.m. to May 3, 2020 01.00 p.m. </label>
+    </div>
+    <div>
+      <div class="middle">
+        <div class="bar-container">
+          <div class="bar-4"></div>
+        </div>
+      </div>
+      <div class="side right">
+        <div>100</div><br>
+      </div>
+    </div>
+  </div>
+  <div class="option-container">
+    <div class="side">
+      <input type="checkbox" name="Option 3" id="option3" value="3" />
+      <label for="option3">May 3, 2020 10:30 a.m. to May 3, 2020 11.00 a.m.</label>
+    </div>
+    <div>
+      <div class="middle">
+        <div class="bar-container">
+          <div class="bar-3"></div>
+        </div>
+      </div>
+      <div class="side right">
+        <div>3</div><br>
+      </div>
+    </div>
+  </div>
+  <div class="option-container">
+    <div class="side">
+      <input type="checkbox" name="Option 4" id="option4" value="4" />
+      <label for="option4"> May 3, 2020 9:30 a.m. to May 3, 2020 10.00 a.m. </label>
+    </div>
+    <div>
+      <div class="middle">
+        <div class="bar-container">
+          <div class="bar-2"></div>
+        </div>
+      </div>
+      <div class="side right">
+        <div>40</div><br>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn">Submit</button>
+</div>
+
+
+
+<script>
+  var items = document.querySelectorAll('.option-container');
+  console.log(items)
+
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('selected-option');
+      item.querySelector("input").checked = !item.querySelector("input").checked;
+    });
+  });
+
+</script>

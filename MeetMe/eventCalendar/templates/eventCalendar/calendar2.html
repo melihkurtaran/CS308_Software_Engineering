@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+
+  <link href="{% static 'packages/core/main.css' %}" rel='stylesheet' />
+  <link href="{% static 'packages/daygrid/main.css' %}" rel='stylesheet' />
+  <link href="{% static 'packages/timegrid/main.css' %}" rel='stylesheet' />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+  <script src="{% static 'js/jquery-1.10.2.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/jquery-ui.custom.min.js' %}" type="text/javascript"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link href="{% static 'css/fullcalendar.css' %}" rel='stylesheet' />
+  <link href="{% static 'css/fullcalendar.print.css' %}" rel='stylesheet' media='print' />
+  <script src="{% static 'js/jquery-1.10.2.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/jquery-ui.custom.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/fullcalendar.js' %}" type="text/javascript"></script>
+
+
+  <script src="{% static 'packages/core/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/interaction/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/daygrid/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/timegrid/main.js' %}" type="text/javascript"></script>
+  
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      
+      var calendarEl = document.getElementById('calendar');
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['interaction', 'dayGrid', 'timeGrid'],
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        eventColor: 'blue',
+        defaultView: 'timeGridWeek',
+        navLinks: true, // can click day/week names to navigate views
+        selectable: true,
+        selectMirror: true,
+        droppable: true,
+        select: function (arg) {
+
+          var title = 'Selected';
+          if (title) {
+            calendar.addEvent(
+              {
+                title: title,
+                start: arg.start,
+                end: arg.end,
+                allDay: arg.allDay
+              },
+
+            );
+
+            var start_date = '';
+            start_date = start_date.concat(arg.start.getFullYear(), '-', ("0" + (arg.start.getMonth() + 1)).slice(-2), '-', ("0" + arg.start.getDate()).slice(-2), ' ',
+              ("0" + arg.start.getHours()).slice(-2), ':', ("0" + arg.start.getMinutes()).slice(-2), ':', '00');
+
+
+            var end_date = '';
+            end_date = end_date.concat(arg.end.getFullYear(), '-', ("0" + (arg.end.getMonth() + 1)).slice(-2), '-', ("0" + arg.end.getDate()).slice(-2), ' ',
+              ("0" + arg.end.getHours()).slice(-2), ':', ("0" + arg.end.getMinutes()).slice(-2), ':', '00');
+
+            $.ajax({
+              type: "GET",
+              url: 'add_event',
+              data: { 'title': title, 'start': start_date, 'end': end_date },
+              dataType: "json",
+
+              failure: function (data) {
+                alert('There is a problem!!!');
+              }
+            });
+
+          }
+          calendar.unselect()
+        },
+        eventClick: function (event) {
+          
+            event.event.remove();
+            var id = event.event.id;
+            $.ajax({
+              type: "GET",
+              url: 'remove',
+              data: { 'id': id },
+              dataType: "json",
+
+              failure: function (data) {
+                alert('There is a problem!!!');
+              }
+            });
+          
+        },
+        eventResize: function (event) {
+          var start = event.event.start;
+          var end = event.event.end;
+
+          var start_date = '';
+          start_date = start_date.concat(start.getFullYear(), '-', ("0" + (start.getMonth() + 1)).slice(-2), '-', ("0" + start.getDate()).slice(-2), ' ',
+            ("0" + start.getHours()).slice(-2), ':', ("0" + start.getMinutes()).slice(-2), ':', '00');
+
+
+          var end_date = '';
+          end_date = end_date.concat(end.getFullYear(), '-', ("0" + (end.getMonth() + 1)).slice(-2), '-', ("0" + end.getDate()).slice(-2), ' ',
+            ("0" + end.getHours()).slice(-2), ':', ("0" + end.getMinutes()).slice(-2), ':', '00');
+
+          var title = event.event.title;
+          var id = event.event.id;
+          $.ajax({
+            type: "GET",
+            url: 'update',
+            data: { 'title': title, 'start': start_date, 'end': end_date, 'id': id },
+            dataType: "json",
+
+            failure: function (data) {
+              alert('There is a problem!!!');
+            }
+          });
+        },
+
+        eventDrop: function (event) {
+          var start = event.event.start;
+          var end = event.event.end;
+
+          var start_date = '';
+          start_date = start_date.concat(start.getFullYear(), '-', ("0" + (start.getMonth() + 1)).slice(-2), '-', ("0" + start.getDate()).slice(-2), ' ',
+            ("0" + start.getHours()).slice(-2), ':', ("0" + start.getMinutes()).slice(-2), ':', '00');
+
+
+          var end_date = '';
+          end_date = end_date.concat(end.getFullYear(), '-', ("0" + (end.getMonth() + 1)).slice(-2), '-', ("0" + end.getDate()).slice(-2), ' ',
+            ("0" + end.getHours()).slice(-2), ':', ("0" + end.getMinutes()).slice(-2), ':', '00');
+
+          var title = event.event.title;
+          var id = event.event.id;
+          
+          console.log(start_date);
+          console.log(end_date);
+          $.ajax({
+            type: "GET",
+            url: 'update',
+            data: { 'title': title, 'start': start_date, 'end': end_date, 'id': id },
+            dataType: "json",
+
+            failure: function (data) {
+              alert('There is a problem!!!');
+            }
+          });
+        },
+
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        events: [
+          {% for event in events %}
+                        {
+          title: "{{event.2}}",
+          start: '{{ event.0}}',
+          end: '{{ event.1}}',
+          id: '{{ event.3 }}',
+        },
+        {% endfor %}
+      ]
+    });
+
+    calendar.render();
+  });
+
+  </script>
+  <div class="wrapper">
+    <main>
+      
+      <style>
+        body {
+          text-align: center;
+          font-size: 14px;
+          font-family: "Helvetica Nueue", Arial, Verdana, sans-serif;
+          background-color: #DDDDDD;
+        }
+
+        #wrap {
+          width: 1100px;
+          margin: 0 auto;
+        }
+
+        #external-events {
+          float: left;
+          width: 150px;
+          padding: 0 10px;
+          text-align: left;
+        }
+
+        #external-events h4 {
+          font-size: 16px;
+          margin-top: 0;
+          padding-top: 1em;
+        }
+
+        .external-event {
+          /* try to mimick the look of a real event */
+          margin: 10px 0;
+          padding: 2px 4px;
+          background: #3366CC;
+          color: #fff;
+          font-size: .85em;
+          cursor: pointer;
+        }
+
+        #external-events p {
+          margin: 1.5em 0;
+          font-size: 11px;
+          color: #666;
+        }
+
+        #external-events p input {
+          margin: 0;
+          vertical-align: middle;
+        }
+
+        #calendar {
+          /* 		float: right; */
+          margin: 0 auto;
+          width: 600px;
+          background-color: #FFFFFF;
+          border-radius: 6px;
+          box-shadow: 0 1px 2px #C3C3C3;
+        }
+      </style>
+</head>
+
+<body>
+  <div id='wrap'>
+    <form action="/action_page.php">
+      <label>Meeting name:</label><br>
+      <input type="text" id="meetingName" name="meetingName"=><br>
+      <label>Location:</label><br>
+      <input type="text" id="meetingLocation" name="meetingLocation"><br>
+      <label>Notes:</label><br>
+      <input type="text" id="meetingNotes" name="meetingNotes"><br>
+      <label>Participants:</label><br>
+      <input type="text" id="meetingParts" name="meetingParts"><br>
+      <label>Recurrence:</label><br>
+      <input type="text" id="meetingRecurrence" name="meetingRecurrence"><br>
+      <input type="submit" value="Submit">
+    </form>
+    <br>
+    <div id='calendar'></div>
+
+    <div style='clear:both'></div>
+  </div>
+</body>
+</main>
+<sidebar>
+  <div class="logo">Meet Me</div>
+  <div class="avatar">
+    <div class="avatar__img">
+      <img src="https://picsum.photos/70" alt="avatar">
+    </div>
+    <div class="avatar__name">{{user.username}}</div>
+  </div>
+  <nav class="menu">
+    <a class="menu__item" href="{% url 'googleApi' %}">
+      <button class="btn btn-primary">Load Calender from Google</button>
+    </a>
+    <a class="menu__item" href="{% url 'profile' %}">
+      <i class="menu__icon fa fa-home"></i>
+      <span class="menu__text">Profile</span>
+    </a>
+    <a class="menu__item menu__item--active" href="#">
+      <i class="menu__icon fa fa-calendar"></i>
+      <span class="menu__text">Calendar</span>
+    </a>
+    <a class="menu__item" href="{% url 'mymeetings' %}">
+      <i class="menu__icon fa fa-bar-chart"></i>
+      <span class="menu__text">My Meetings</span>
+    </a>
+    <a class="menu__item" href="{% url 'logout' %}">
+      <i class="menu__icon fa fa-sliders"></i>
+      <span class="menu__item">
+        Logout
+      </span>
+    </a>
+  </nav>
+
+
+  <div class="copyright">copyright &copy; 2020</div>
+</sidebar>
+
+</html>

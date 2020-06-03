@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Popper JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<title>Login</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	<style>
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		/* Button used to open the chat form - fixed at the bottom of the page */
+		.open-button {
+			background-color: #555;
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			opacity: 0.8;
+			position: fixed;
+			bottom: 23px;
+			right: 28px;
+			width: 280px;
+		}
+
+		/* The popup chat - hidden by default */
+		.chat-popup {
+			display: none;
+			position: fixed;
+			bottom: 0;
+			right: 15px;
+			border: 3px solid #f1f1f1;
+			z-index: 9;
+		}
+
+		/* Add styles to the form container */
+		.form-container {
+			max-width: 300px;
+			padding: 10px;
+			background-color: white;
+		}
+
+		/* Full-width textarea */
+		.form-container textarea {
+			width: 100%;
+			padding: 15px;
+			margin: 5px 0 22px 0;
+			border: none;
+			background: #f1f1f1;
+			resize: none;
+			min-height: 200px;
+		}
+
+		/* When the textarea gets focus, do something */
+		.form-container textarea:focus {
+			background-color: #ddd;
+			outline: none;
+		}
+
+		/* Set a style for the submit/send button */
+		.form-container .btn {
+			background-color: #4CAF50;
+			color: white;
+			padding: 16px 20px;
+			border: none;
+			cursor: pointer;
+			width: 100%;
+			margin-bottom: 10px;
+			opacity: 0.8;
+		}
+
+		/* Add a red background color to the cancel button */
+		.form-container .cancel {
+			background-color: red;
+		}
+
+		/* Add some hover effects to buttons */
+		.form-container .btn:hover,
+		.open-button:hover {
+			opacity: 1;
+		}
+
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+		#buttonEnter {
+			border: 1px solid;
+			text-shadow: 0 1px 0 #1e3c5e;
+			font-size: .875em;
+			padding: 8px 15px;
+			width: 150px;
+			border-radius: 20px;
+			box-shadow: 0 1px 0 #bbb, 0 1px 0 #9cccf3 inset;
+		}
+	</style>
+</head>
+
+<body background="http://www.gunainsaat.com/wp-content/uploads/2013/04/Wordpress-Background-Blue-Light.jpg"
+	style="font-family: georgia, garamond, serif; font-size: 17px;">
+	<p id="time" align="right"></p>
+	<script>
+		var d = new Date();
+		document.getElementById("time").innerHTML = d;
+	</script>
+	<h1>
+		<a id="header" href="/">MeetMe!</a>
+	</h1>
+	<p class="reg" align="right">
+		<strong>&gt;&gt;Login/<a class="reg" href="register" style="color:red;">Registration</a></strong>
+	</p>
+
+	<hr />
+
+	<form style="font-family: georgia, garamond, serif;" method="post" id="form" action="login">
+		<!--discount.jsp removed-->
+		{% csrf_token %}
+		<h2>Login</h2>
+		<div class="divTable">
+			<div class="divTableBody">
+				<div class="divTableRow">
+					<div class="divTableCell">Username:</div>
+					<div class="divTableCell">
+						<div class="input-group">
+							<input id="email" type="text" class="form-control" name="username"
+								placeholder="username" required> <span
+								class="input-group-addon"><i
+								class="glyphicon glyphicon-user"></i></span>
+						</div>
+					</div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Password:</div>
+					<div class="divTableCell">
+						<div class="input-group">
+							<input id="password" type="password" class="form-control" name="password"
+								placeholder="Password" required> <span class="input-group-addon"><i
+									class="glyphicon glyphicon-lock"></i></span>
+						</div>
+					</div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell"></div>
+					<div class="divTableCell">
+						<div class="divTableCell">
+							<input class="form-check-input" type="checkbox" />
+						</div>
+						<div class="divTableCell">
+							<label class="form-check-label"
+								style="color: white; font-family: georgia, garamond, serif; font-size: 14px;">Remember
+								me </label>
+						</div>
+					</div>
+
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">
+						<button class="green" type="submit" value="login" id="buttonEnter">Login</button>
+					</div>
+					<div class="divTableCell">
+						<a id="redcolor" href="register">Register</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<button class="open-button" onclick="openForm()">For any question</button>
+	<div class="chat-popup" id="myForm">
+		<form action="/action_page.php" class="form-container" style="color:black;">
+
+
+			<label for="msg"><b>Write your question:</b></label>
+			<textarea placeholder="Type message.." name="msg" required></textarea>
+
+			<button type="submit" class="btn">Send</button>
+			<button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+		</form>
+	</div>
+
+	<div>
+		<!--For error display from backend you can change this to js alerts or something else your choice-->
+		{% for message in messages %}
+		<h3> {{ message }}</h3>
+		{% endfor %}
+	</div>
+
+	<script>
+		function openForm() {
+			document.getElementById("myForm").style.display = "block";
+		}
+
+		function closeForm() {
+			document.getElementById("myForm").style.display = "none";
+		}
+	</script>
+	<footer style="text-align:center;">
+		<p>
+			CS308 Team 3 &copy; 2020. All rights reserved. Contact: <a
+				href="cs308team3@sabanciuniv.edu"><em>cs308team3@sabanciuniv.edu
+				</em></a>
+		</p>
+	</footer>
+</body>
+
+</html>

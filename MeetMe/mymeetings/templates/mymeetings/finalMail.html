@@ -1,0 +1,12 @@
+{% autoescape off %}
+Hi {{ user.username }},
+
+Meeting you have invited has finalized as follows:
+Name: {{meeting.meetingName}}
+Start Time: {{meeting.start}}
+End Time: {{meeting.end}}
+
+We added it to your events, please click the following link to review your meetings:
+
+http://{{ domain }}{% url 'acceptInvite' uidb64=uid token=token %}
+{% endautoescape %}

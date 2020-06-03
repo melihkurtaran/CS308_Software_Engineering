@@ -1,0 +1,15 @@
+{% autoescape off %}
+Hi {{ partUser }},
+
+The following meeting has been cancelled by {{ creatorUser.username }}:
+Name: {{meetingInfoObj.meetingName}}
+Location: {{ meetingInfoObj.location }}
+Notes: {{ meetingInfoObj.note }}
+Start Time: {{meetingInfoObj.start}}
+End Time: {{meetingInfoObj.end}}
+Recurrence: {{ meetingInfoObj.recurrence}}
+
+Please click the following link to review your current meetings:
+
+http://{{ domain }}{% url 'acceptInvite' uidb64=uid token=token %}
+{% endautoescape %}

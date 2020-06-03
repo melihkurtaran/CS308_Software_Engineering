@@ -1,0 +1,416 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+
+  <link href="{% static 'packages/core/main.css' %}" rel='stylesheet' />
+  <link href="{% static 'packages/daygrid/main.css' %}" rel='stylesheet' />
+  <link href="{% static 'packages/timegrid/main.css' %}" rel='stylesheet' />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script> -->
+  <!-- <script src="{% static 'js/jquery-1.10.2.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/jquery-ui.custom.min.js' %}" type="text/javascript"></script> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link href="{% static 'css/fullcalendar.css' %}" rel='stylesheet' />
+  <link href="{% static 'css/fullcalendar.print.css' %}" rel='stylesheet' media='print' />
+  <!-- <script src="{% static 'js/jquery-1.10.2.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/jquery-ui.custom.min.js' %}" type="text/javascript"></script> -->
+  <script src="{% static 'js/fullcalendar.js' %}" type="text/javascript"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+  <script src="{% static 'packages/core/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/interaction/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/daygrid/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/timegrid/main.js' %}" type="text/javascript"></script>
+  <style>
+    body {
+      text-align: center;
+      font-size: 14px;
+      font-family: "Helvetica Nueue", Arial, Verdana, sans-serif;
+    }
+
+    #wrap {
+      width: 1100px;
+      margin: 0 auto;
+    }
+
+    #external-events {
+      float: left;
+      width: 150px;
+      padding: 0 10px;
+      text-align: left;
+    }
+
+    #external-events h4 {
+      font-size: 16px;
+      margin-top: 0;
+      padding-top: 1em;
+    }
+
+    .external-event {
+      /* try to mimick the look of a real event */
+      margin: 10px 0;
+      padding: 2px 4px;
+      background: #3366CC;
+      color: #fff;
+      font-size: .85em;
+      cursor: pointer;
+    }
+
+    #external-events p {
+      margin: 1.5em 0;
+      font-size: 11px;
+      color: #666;
+    }
+
+    #external-events p input {
+      margin: 0;
+      vertical-align: middle;
+    }
+
+    #calendar {
+      /* 		float: right; */
+      margin: 0 auto;
+      width: 900px;
+      background-color: #FFFFFF;
+      border-radius: 6px;
+      box-shadow: 0 1px 2px #C3C3C3;
+    }
+
+    .modal-toggle {
+      margin-right: 20px;
+      color: rgb(168, 178, 185);
+    }
+
+    .modal-toggle:hover {
+      color: rgb(168, 178, 185);
+    }
+
+    .modal-toggle.modal-active {
+      color: #007bff;
+    }
+
+    .modal-toggle.modal-active:hover {
+      color: #007bff;
+    }
+
+    .donate-now {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .donate-now li {
+      float: left;
+      margin: 0 5px 0 0;
+      width: 75px;
+      height: 40px;
+      position: relative;
+    }
+
+    .donate-now label,
+    .donate-now input {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    .donate-now input[type="radio"] {
+      opacity: 0.01;
+      z-index: 100;
+    }
+
+    .donate-now input[type="radio"]:checked+label,
+    .Checked+label {
+      background: #007bff;
+      color: white;
+    }
+
+    .importance input[type="radio"]:checked+label,
+    .Checked+label {
+      background-color: white;
+      border: 2px solid #007bff;
+    }
+
+    .donate-now label {
+      padding: 5px;
+      border: 1px solid #CCC;
+      cursor: pointer;
+      z-index: 90;
+      border-radius: .25rem;
+      color: black;
+    }
+
+    .donate-now label:hover {
+      background: #DDD;
+    }
+
+    .modal {
+      z-index: 3;
+    }
+
+    .container1 {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ui-timepicker-container {
+      z-index: 5 !important;
+    }
+
+    .modal-dialog {
+      min-width: 600px !important;
+    }
+  </style>
+  <script>
+    
+    $(function () {
+      $("input[data-plugin='datepicker']").datepicker();
+      $("input[data-plugin='datepicker']").datepicker("option", "dateFormat", "yy-mm-dd");
+      $("input[data-plugin='timepicker']").timepicker({});
+    });
+    $(document).ready(function () {
+      var max_fields = 10;
+      var wrapper = $(".container1");
+      var optionsContainer = $(".options-form-fields");
+      var add_button = $("#add_form_field");
+
+      var x = 1;
+      $(add_button).click(function (e) {
+        e.preventDefault();
+        if (x < max_fields) {
+          $(optionsContainer).append(`<div style="display:flex; margin-bottom:10px;">
+
+                  <input type="text" name="option_start_date" id="option_start_date_${x}" class="form-control"
+                    data-plugin="datepicker" style="width:120px" placeholder="Start Date">
+
+                  <input type="text" name="option_start_time" id="option_start_time_${x}" class="form-control"
+                    data-plugin="timepicker" style="width:100px; margin-left:10px;" placeholder="Start Time">
+
+                  <input type="text" name="option_end_date" id="option_end_date_${x}" class="form-control"
+                    data-plugin="datepicker" style="width:120px; margin-left:10px;" placeholder="End Date"
+                    margin-left:10px;>
+
+                  <input type="text" name="option_end_time" id="option_end_time_${x}" class="form-control"
+                    data-plugin="timepicker" style="width:100px; margin-left:10px;" placeholder="End Time">
+
+                  </div>`);
+          x++;
+          $(function () {
+            $("input[data-plugin='datepicker']").datepicker();
+            $("input[data-plugin='datepicker']").datepicker("option", "dateFormat", "yy-mm-dd");
+            $("input[data-plugin='timepicker']").timepicker({});
+          });
+        } else {
+          alert('You Reached the limits')
+        }
+      });
+
+      $(wrapper).on("click", ".delete", function (e) {
+        e.preventDefault();
+        $(this).parent('div').remove();
+        x--;
+      })
+    });
+
+    var x = document.querySelector("#aaaaaaaaaaaa");
+    console.log(x);
+
+    
+    window.onload=function(){
+    document.querySelector("#save-this-meeting").addEventListener("click", () => {
+      var meetingName = document.querySelector("#meeting-name").value;
+      var location = document.querySelector("#location").value;
+      var note = document.querySelector("#note").value;
+      var participants = document.querySelector("#participants").value;
+      var importance = $("input[name='importance_for_meeting']:checked").val();
+      var recurrence = $("input[name='recurrence_for_meeting']:checked").val();
+      var optionsChildren = $(".options-form-fields").children();
+      var options = [];
+      console.log(meetingName);
+
+
+      for (var i = 0; i < optionsChildren.length; i++) {
+        var option = optionsChildren[i];
+        var jsonOption = {
+          'start_date': option.querySelector("[name='option_start_date']").value,
+          'start_time': option.querySelector("[name='option_start_time']").value,
+          'end_date': option.querySelector("[name='option_end_date']").value,
+          'end_time': option.querySelector("[name='option_end_time']").value
+        }
+        options.push(jsonOption)
+      }
+
+      $.ajax({
+
+        type: "GET",
+        url: 'edit', // editing endpoint
+        data: { 'meetingName': meetingName, 'location': location, 'note': note, 'participants': participants, 'className': importance, 'recurrence': recurrence, 'options': JSON.stringify(options), 'meetingID_r': '{{meetingID_r}}' },
+        dataType: "json",
+        success: function (data) {
+          location.reload();
+          alert("Edited Successfully");
+        },
+        failure: function (data) {
+          alert('There is a problem!!!');
+        }
+      });
+
+    });}
+  </script>
+</head>
+
+<body>
+  <h1 style="margin-top:20px;">Edit the Meeting</h1>
+  {% if meeting.is_decided == True %}
+  <p>Start of meeting: {{meeting.start}}</p>
+  <p>End of meeting: {{meeting.end}}</p>
+  {%endif%}
+  <div id='wrap'>
+    <div id="meeting-form">
+      <div class="modal-body">
+        <div class="form-group row">
+          <label class="col-md-2 form-control-label" for="meeting-name">Meeting Name:</label>
+          <div class="col-md-10">
+            <input type="text" class="form-control" id="meeting-name" name="meeting-name"
+              value="{{meeting.meetingName}}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 form-control-label" for="location">Location:</label>
+          <div class="col-md-10">
+            <input type="text" class="form-control" id="location" name="location" value="{{meeting.location}}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 form-control-label" for="note">Note:</label>
+          <div class="col-md-10">
+            <input type="text" class="form-control" id="note" name="note" value="{{meeting.note}}">
+          </div>
+        </div>
+        <div class="form-group row">
+          {% if meeting.is_decided == False %}
+          <label class="col-md-2 form-control-label" for="participants">Participants:</label>
+          <div class="col-md-10">
+            {% if participants == "" %}
+            <input type="text" class="form-control" id="participants" name="participants">
+            {%endif%}
+            {% if participants != "" %}
+            <input type="text" class="form-control" id="participants" name="participants"
+            value="{{participants}}">
+            {%endif%}
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="form-control-label col-md-2">Recurrence:</label>
+          <div class="col-md-10">
+            <ul class="donate-now">
+              <li>
+                <input type="radio" id="single_for_meeting" name="recurrence_for_meeting" checked="checked"
+                  value="single" />
+                <label for="single_for_meeting">Single</label>
+              </li>
+              <li>
+                <input type="radio" id="weekly_for_meeting" name="recurrence_for_meeting" value="weekly" />
+                <label for="weekly_for_meeting">Weekly</label>
+              </li>
+              <li>
+                <input type="radio" id="monthly_for_meeting" name="recurrence_for_meeting" value="monthly" />
+                <label for="monthly_for_meeting">Monthly</label>
+              </li>
+              <li>
+                <input type="radio" id="quarterly_for_meeting" name="recurrence_for_meeting" value="quarterly" />
+                <label for="quarterly_for_meeting">Quarterly</label>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="form-control-label col-md-2">Importance:</label>
+          <div class="col-md-10">
+            <ul class="donate-now importance">
+              <li>
+                <input type="radio" id="important_for_meeting" name="importance_for_meeting" checked="checked"
+                  value="important" />
+                <label for="important_for_meeting" style="color: red">Important</label>
+              </li>
+              <li>
+                <input type="radio" id="normal_for_meeting" name="importance_for_meeting" value="normal" />
+                <label for="normal_for_meeting" style="color: blue">Normal</label>
+              </li>
+              <li>
+                <input type="radio" id="info_for_meeting" name="importance_for_meeting" value="info" />
+                <label for="info_for_meeting" style="color: green">Info</label>
+              </li>
+              <li>
+                <input type="radio" id="chill_for_meeting" name="importance_for_meeting" value="chill" />
+                <label for="chill_for_meeting" style="color: purple">Chill</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="form-control-label col-md-2">Options:</label>
+          <div class="col-md-10">
+            <div class="container1">
+              <div class="options-form-fields">
+                <div style="display:flex; margin-bottom:10px;">
+                  <input type="text" name="option_start_date" id="option_start_date_0" class="form-control"
+                    data-plugin="datepicker" style="width:120px" placeholder="Start Date">
+
+                  <input type="text" name="option_start_time" id="option_start_time_0" class="form-control"
+                    data-plugin="timepicker" style="width:100px; margin-left:10px;" placeholder="Start Time">
+
+                  <input type="text" name="option_end_date" id="option_end_date_0" class="form-control"
+                    data-plugin="datepicker" style="width:120px; margin-left:10px;" placeholder="End Date"
+                    margin-left:10px;>
+
+                  <input type="text" name="option_end_time" id="option_end_time_0" class="form-control"
+                    data-plugin="timepicker" style="width:100px; margin-left:10px;" placeholder="End Time">
+                </div>
+              </div>
+              <button class="btn btn-primary" id="add_form_field">Add New Field &nbsp;
+                <span style="font-size:16px; font-weight:bold;">+ </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {%endif%}
+      <div class="modal-footer">
+        <div class="form-actions">
+          <a href="{% url 'mymeetings' %} "> <button class="btn btn-primary" data-dismiss="modal" type="button" id="save-this-meeting">Save this
+            meeting</button> </a>
+          <a class="btn btn-sm btn-white" data-dismiss="modal" href="{% url 'mymeetings' %} " id="cancel-button">Cancel</a>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+  {% if meeting.is_decided == False %}
+  <h1>Previous Options</h1>
+  {% for i in meetingEvents %}
+  <p>Start of date: {{i.start}}</p>
+  <p>End of date: {{i.end}}</p>
+  <p>Number votes for this date: {{i.voteNumber}}</p>
+  <p>-------------------------------------</p>
+  {% endfor %}
+  {%endif%}
+
+
+</body>
+
+</html>

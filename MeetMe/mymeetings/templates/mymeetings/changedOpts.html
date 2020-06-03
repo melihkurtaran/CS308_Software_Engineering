@@ -1,0 +1,8 @@
+{% autoescape off %}
+Hi {{ user.username }},
+
+
+Options regarding this meeting have changed by the creator, all votes reset, please examine changes in the following link:
+
+http://{{ domain }}{% url 'acceptInvite' uidb64=uid token=token %}
+{% endautoescape %}

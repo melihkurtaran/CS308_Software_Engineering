@@ -1,0 +1,7 @@
+{% autoescape off %}
+Hi {{ user.username }},
+
+Please click the following link to accept invitation, ignore if you want to reject it:
+
+http://{{ domain }}{% url 'acceptInvite' uidb64=uid token=token %}
+{% endautoescape %}

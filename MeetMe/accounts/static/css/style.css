@@ -1,0 +1,142 @@
+@charset "UTF-8";
+
+body { color: yellow;
+}
+
+a {color: white;
+}
+
+a:hover {
+  color: hotpink;
+}
+
+a:visited {
+	color: #FEFEFE;
+}
+
+#header {
+	text-shadow: 3px 2px white;
+	margin: 10px;
+	font-size: 60px;
+	color: #d03524
+}
+
+textarea {
+  width: 160%;
+  height: 100px;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 12px;
+}
+
+#redcolor {
+	color: red;
+	text-decoration: underline;
+}
+
+input[type=search] {
+  width: 80px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  background-color: white;
+  background-repeat: no-repeat;
+}
+
+input[type=search]:focus {
+  width: 200%;
+}
+
+#form{
+	background-color: black;
+	padding: 20px;
+	margin-top: 30px;
+	margin-bottom: 190px;
+	margin-left: 200px;
+	margin-right: 200px;
+	max-width: 800px;
+	min-width: 500px;
+	border-radius: 20px;
+	border: 2px solid #ccc;
+	border-color:white;
+}
+
+.green {
+  background-color: green;
+  border: 2px solid #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 2px;
+}
+
+.green:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.red {
+  background-color: red;
+  border: 2px solid #d90200;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 2px;
+}
+
+.red:hover {
+  background-color: #d90200;
+  color: white;
+}
+.reg{
+	color: black;
+	font-size: 18px;
+}
+
+
+footer {
+        padding: 10px 20px;
+        background: #7b40d6;
+        color: #afaeaf;
+      }
+
+
+/* DivTable.com */
+.divTable{
+	display: table;
+	width: 100%;
+}
+.divTableRow {
+	display: table-row;
+}
+.divTableHeading {
+	background-color: #EEE;
+	display: table-header-group;
+}
+.divTableCell, .divTableHead {
+	display: table-cell;
+	padding: 3px 10px;
+}
+.divTableHeading {
+	background-color: #EEE;
+	display: table-header-group;
+	font-weight: bold;
+}
+.divTableFoot {
+	background-color: #EEE;
+	display: table-footer-group;
+	font-weight: bold;
+}
+.divTableBody {
+	display: table-row-group;
+}

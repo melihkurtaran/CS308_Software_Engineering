@@ -1,0 +1,20 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>The HTML5 Herald</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+  <div>
+    <!--For error display from backend you can change this to js alerts or something else your choice-->
+    {% for option in options %}
+    <h3> {{ option.voteNumber }}</h3>
+    {% endfor %}
+  </div>
+
+</head>
+
+</html>

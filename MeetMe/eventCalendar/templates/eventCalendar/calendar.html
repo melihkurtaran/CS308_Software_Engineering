@@ -1,0 +1,743 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+
+  <link href="{% static 'packages/core/main.css' %}" rel='stylesheet' />
+  <link href="{% static 'packages/daygrid/main.css' %}" rel='stylesheet' />
+  <link href="{% static 'packages/timegrid/main.css' %}" rel='stylesheet' />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script> -->
+  <!-- <script src="{% static 'js/jquery-1.10.2.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/jquery-ui.custom.min.js' %}" type="text/javascript"></script> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link href="{% static 'css/fullcalendar.css' %}" rel='stylesheet' />
+  <link href="{% static 'css/fullcalendar.print.css' %}" rel='stylesheet' media='print' />
+  <!-- <script src="{% static 'js/jquery-1.10.2.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/jquery-ui.custom.min.js' %}" type="text/javascript"></script> -->
+  <script src="{% static 'js/fullcalendar.js' %}" type="text/javascript"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+
+  <script src="{% static 'packages/core/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/interaction/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/daygrid/main.js' %}" type="text/javascript"></script>
+  <script src="{% static 'packages/timegrid/main.js' %}" type="text/javascript"></script>
+  <script>
+    $(function () {
+      $("input[data-plugin='datepicker']").datepicker();
+      $("input[data-plugin='datepicker']").datepicker("option", "dateFormat", "yy-mm-dd");
+      $("input[data-plugin='timepicker']").timepicker({});
+    });
+
+    function openModal() {
+      document.querySelector("#addNewEvent").classList.add("show");
+      document.querySelector("#addNewEvent").style.display = "block";
+      document.querySelector("#addNewEvent").setAttribute("aria-hidden", "");
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['interaction', 'dayGrid', 'timeGrid'],
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        defaultDate: '2020-05-06',
+        navLinks: true, // can click day/week names to navigate views
+        selectable: true,
+        selectMirror: true,
+        droppable: true,
+        select: function (arg) {
+          openModal();
+
+          document.querySelector("#add-this-event").addEventListener("click", () => {
+            var title = document.querySelector("#ename").value;
+            var startDate = document.querySelector("#starts").value;
+            var endDate = document.querySelector("#ends").value;
+            var importance = $("input[name='importance_for_event']:checked").val();
+            var recurrence = $("input[name='recurrence_for_event']:checked").val();
+            // var recurrence = $(".options-form-fields");
+
+
+            // calendar.addEvent(
+            //   {
+            //     title: title,
+            //     start: arg.start,
+            //     end: arg.end,
+            //     allDay: arg.allDay
+            //   },
+            // );
+
+            var start_date = '';
+            start_date = start_date.concat(arg.start.getFullYear(), '-', ("0" + (arg.start.getMonth() + 1)).slice(-2), '-', ("0" + arg.start.getDate()).slice(-2), ' ',
+              ("0" + arg.start.getHours()).slice(-2), ':', ("0" + arg.start.getMinutes()).slice(-2), ':', '00');
+
+            var new_start_date = `${startDate} 00:00:00`;
+            var new_end_date = `${endDate} 00:00:00`;
+
+
+            var end_date = '';
+            end_date = end_date.concat(arg.end.getFullYear(), '-', ("0" + (arg.end.getMonth() + 1)).slice(-2), '-', ("0" + arg.end.getDate()).slice(-2), ' ',
+              ("0" + arg.end.getHours()).slice(-2), ':', ("0" + arg.end.getMinutes()).slice(-2), ':', '00');
+
+            $.ajax({
+              type: "GET",
+              url: 'add_event',
+              data: { 'title': title, 'start': start_date, 'end': end_date, 'className': importance, 'recurrence': recurrence },
+              dataType: "json",
+              success: function (data) {
+                calendar.refetchEvents();
+                location.reload();
+                alert("Added Successfully");
+              },
+              failure: function (data) {
+                alert('There is a problem!!!');
+              }
+            });
+          })
+
+          document.querySelector("#add-this-meeting").addEventListener("click", () => {
+            var meetingName = document.querySelector("#meeting-name").value;
+            var location = document.querySelector("#location").value;
+            var note = document.querySelector("#note").value;
+            var participants = document.querySelector("#participants").value;
+            var importance = $("input[name='importance_for_meeting']:checked").val();
+            var recurrence = $("input[name='recurrence_for_meeting']:checked").val();
+            var optionsChildren = $(".options-form-fields").children();
+            var options = [];
+
+
+
+            for (var i = 0; i < optionsChildren.length; i++) {
+              var option = optionsChildren[i];
+              var jsonOption = {
+                'start_date': option.querySelector("[name='option_start_date']").value,
+                'start_time': option.querySelector("[name='option_start_time']").value,
+                'end_date': option.querySelector("[name='option_end_date']").value,
+                'end_time': option.querySelector("[name='option_end_time']").value
+              }
+              options.push(jsonOption)
+            }
+
+            // calendar.addEvent(
+            //   {
+            //     title: title,
+            //     start: arg.start,
+            //     end: arg.end,
+            //     allDay: arg.allDay
+            //   },
+            // );
+
+            $.ajax({
+              type: "GET",
+              url: 'createMeeting', // meeting endpoint
+              data: { 'meetingName': meetingName, 'location': location, 'note': note, 'participants': participants, 'className': importance, 'recurrence': recurrence, 'options': JSON.stringify(options) },
+              dataType: "json",
+              success: function (data) {
+                calendar.refetchEvents();
+                location.reload();
+                alert("Added Successfully");
+              },
+              failure: function (data) {
+                alert('There is a problem!!!');
+              }
+            });
+          })
+
+          calendar.unselect()
+        },
+        eventClick: function (event) {
+          if (confirm("Are you sure you want to remove it?")) {
+            event.event.remove();
+            var id = event.event.id;
+            $.ajax({
+              type: "GET",
+              url: 'remove',
+              data: { 'id': id },
+              dataType: "json",
+              success: function (data) {
+                calendar.refetchEvents();
+                alert('Event Removed');
+              },
+              failure: function (data) {
+                alert('There is a problem!!!');
+              }
+            });
+          }
+        },
+        eventResize: function (event) {
+          var start = event.event.start;
+          var end = event.event.end;
+
+          var start_date = '';
+          start_date = start_date.concat(start.getFullYear(), '-', ("0" + (start.getMonth() + 1)).slice(-2), '-', ("0" + start.getDate()).slice(-2), ' ',
+            ("0" + start.getHours()).slice(-2), ':', ("0" + start.getMinutes()).slice(-2), ':', '00');
+
+
+          var end_date = '';
+          end_date = end_date.concat(end.getFullYear(), '-', ("0" + (end.getMonth() + 1)).slice(-2), '-', ("0" + end.getDate()).slice(-2), ' ',
+            ("0" + end.getHours()).slice(-2), ':', ("0" + end.getMinutes()).slice(-2), ':', '00');
+
+          var title = event.event.title;
+          var id = event.event.id;
+          $.ajax({
+            type: "GET",
+            url: 'update',
+            data: { 'title': title, 'start': start_date, 'end': end_date, 'id': id },
+            dataType: "json",
+            success: function (data) {
+              calendar.refetchEvents();
+              alert('Event Update');
+              closeModal();
+            },
+            failure: function (data) {
+              alert('There is a problem!!!');
+            }
+          });
+        },
+
+        eventDrop: function (event) {
+          var start = event.event.start;
+          var end = event.event.end;
+
+          var start_date = '';
+          start_date = start_date.concat(start.getFullYear(), '-', ("0" + (start.getMonth() + 1)).slice(-2), '-', ("0" + start.getDate()).slice(-2), ' ',
+            ("0" + start.getHours()).slice(-2), ':', ("0" + start.getMinutes()).slice(-2), ':', '00');
+
+
+          var end_date = '';
+          end_date = end_date.concat(end.getFullYear(), '-', ("0" + (end.getMonth() + 1)).slice(-2), '-', ("0" + end.getDate()).slice(-2), ' ',
+            ("0" + end.getHours()).slice(-2), ':', ("0" + end.getMinutes()).slice(-2), ':', '00');
+
+          var title = event.event.title;
+          var id = event.event.id;
+
+          $.ajax({
+            type: "GET",
+            url: 'update',
+            data: { 'title': title, 'start': start_date, 'end': end_date, 'id': id },
+            dataType: "json",
+            success: function (data) {
+              calendar.refetchEvents();
+              alert('Event Update');
+            },
+            failure: function (data) {
+              alert('There is a problem!!!');
+            }
+          });
+        },
+
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        events: [
+          {% for event in events %}
+    {
+          title: "{{event.2}}",
+          start: '{{ event.0}}',
+          end: '{{ event.1}}',
+          id: '{{ event.3 }}',
+          className: 'info'
+        },
+        {% endfor %}
+      ]
+    });
+
+    calendar.render();
+  });
+
+
+
+  </script>
+  <div class="wrapper">
+    <main>
+      <style>
+        body {
+          text-align: center;
+          font-size: 14px;
+          font-family: "Helvetica Nueue", Arial, Verdana, sans-serif;
+          background-color: #DDDDDD;
+        }
+
+        #wrap {
+          width: 1100px;
+          margin: 0 auto;
+        }
+
+        #external-events {
+          float: left;
+          width: 150px;
+          padding: 0 10px;
+          text-align: left;
+        }
+
+        #external-events h4 {
+          font-size: 16px;
+          margin-top: 0;
+          padding-top: 1em;
+        }
+
+        .external-event {
+          /* try to mimick the look of a real event */
+          margin: 10px 0;
+          padding: 2px 4px;
+          background: #3366CC;
+          color: #fff;
+          font-size: .85em;
+          cursor: pointer;
+        }
+
+        #external-events p {
+          margin: 1.5em 0;
+          font-size: 11px;
+          color: #666;
+        }
+
+        #external-events p input {
+          margin: 0;
+          vertical-align: middle;
+        }
+
+        #calendar {
+          /* 		float: right; */
+          margin: 0 auto;
+          width: 900px;
+          background-color: #FFFFFF;
+          border-radius: 6px;
+          box-shadow: 0 1px 2px #C3C3C3;
+        }
+
+        .modal-toggle {
+          margin-right: 20px;
+          color: rgb(168, 178, 185);
+        }
+
+        .modal-toggle:hover {
+          color: rgb(168, 178, 185);
+        }
+
+        .modal-toggle.modal-active {
+          color: #007bff;
+        }
+
+        .modal-toggle.modal-active:hover {
+          color: #007bff;
+        }
+
+        .donate-now {
+          list-style-type: none;
+          padding: 0;
+        }
+
+        .donate-now li {
+          float: left;
+          margin: 0 5px 0 0;
+          width: 75px;
+          height: 40px;
+          position: relative;
+        }
+
+        .donate-now label,
+        .donate-now input {
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+        }
+
+        .donate-now input[type="radio"] {
+          opacity: 0.01;
+          z-index: 100;
+        }
+
+        .donate-now input[type="radio"]:checked+label,
+        .Checked+label {
+          background: #007bff;
+          color: white;
+        }
+
+        .importance input[type="radio"]:checked+label,
+        .Checked+label {
+          background-color: white;
+          border: 2px solid #007bff;
+        }
+
+        .donate-now label {
+          padding: 5px;
+          border: 1px solid #CCC;
+          cursor: pointer;
+          z-index: 90;
+          border-radius: .25rem;
+          color: black;
+        }
+
+        .donate-now label:hover {
+          background: #DDD;
+        }
+
+        .modal {
+          z-index: 3;
+        }
+
+        .container1 {
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .ui-timepicker-container {
+          z-index: 5 !important;
+        }
+
+        .modal-dialog {
+          min-width: 600px !important;
+        }
+      </style>
+</head>
+
+<body>
+  <div id='wrap'>
+    <div class="modal fade" id="addNewEvent" aria-labelledby="addNewEvent" role="dialog" tabindex="-1"
+      style="display: none;" aria-hidden="true">
+      <div class="modal-dialog modal-simple">
+        <form class="modal-content form-horizontal" action="#" method="post" role="form">
+          <div class="modal-header">
+            <h4 class="modal-title"><a id="new-event-toggle" class="modal-toggle modal-active">New Event</a></h4>
+            <h4 class="modal-title"><a id="new-meeting-toggle" class="modal-toggle">New Meeting</a></h4>
+            <button type="button" class="close" aria-hidden="true" data-dismiss="modal" id="close-button">×</button>
+          </div>
+          <div id="event-form">
+            <div class="modal-body">
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label" for="ename">Name:</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" id="ename" name="ename">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label" for="starts">Starts:</label>
+                <div class="col-md-10">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="starts" data-container="#addNewEvent"
+                      data-plugin="datepicker">
+                    <span class="input-group-addon">
+                      <i class="icon wb-calendar" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label" for="ends">Ends:</label>
+                <div class="col-md-10">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="ends" data-container="#addNewEvent"
+                      data-plugin="datepicker">
+                    <span class="input-group-addon">
+                      <i class="icon wb-calendar" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="form-control-label col-md-2">Recurrence:</label>
+                <div class="col-md-10">
+                  <ul class="donate-now">
+                    <li>
+                      <input type="radio" id="single_for_event" name="recurrence_for_event" value="single"
+                        checked="checked" />
+                      <label for="single_for_event">Single</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="weekly_for_event" name="recurrence_for_event" value="weekly" />
+                      <label for="weekly_for_event">Weekly</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="monthly_for_event" name="recurrence_for_event" value="monthly" />
+                      <label for="monthly_for_event">Monthly</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="quarterly_for_event" name="recurrence_for_event" value="quarterly" />
+                      <label for="quarterly_for_event">Quarterly</label>
+                    </li>
+                  </ul>
+
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="form-control-label col-md-2">Importance:</label>
+                <div class="col-md-10">
+                  <ul class="donate-now importance">
+                    <li>
+                      <input type="radio" id="important" name="importance_for_event" checked="checked"
+                        value="important" />
+                      <label for="important" style="color: red">Important</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="normal" name="importance_for_event" value="normal" />
+                      <label for="normal" style="color: blue">Normal</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="info" name="importance_for_event" value="info" />
+                      <label for="info" style="color: green">Info</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="chill" name="importance_for_event" value="chill" />
+                      <label for="chill" style="color: purple">Chill</label>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="form-actions">
+                <button class="btn btn-primary" data-dismiss="modal" type="button" id="add-this-event">Add this
+                  event</button>
+                <a class="btn btn-sm btn-white" data-dismiss="modal" href="javascript:void(0)"
+                  id="cancel-button">Cancel</a>
+              </div>
+            </div>
+          </div>
+          <div id="meeting-form" style="display: none;">
+            <div class="modal-body">
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label" for="meeting-name">Meeting Name:</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" id="meeting-name" name="meeting-name">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label" for="location">Location:</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" id="location" name="location">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label" for="note">Note:</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" id="note" name="note">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label" for="participants">Participants:</label>
+                <div class="col-md-10">
+                  <input type="text" class="form-control" id="participants" name="participants">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="form-control-label col-md-2">Recurrence:</label>
+                <div class="col-md-10">
+                  <ul class="donate-now">
+                    <li>
+                      <input type="radio" id="single_for_meeting" name="recurrence_for_meeting" checked="checked"
+                        value="single" />
+                      <label for="single_for_meeting">Single</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="weekly_for_meeting" name="recurrence_for_meeting" value="weekly" />
+                      <label for="weekly_for_meeting">Weekly</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="monthly_for_meeting" name="recurrence_for_meeting" value="monthly" />
+                      <label for="monthly_for_meeting">Monthly</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="quarterly_for_meeting" name="recurrence_for_meeting" value="quarterly" />
+                      <label for="quarterly_for_meeting">Quarterly</label>
+                    </li>
+                  </ul>
+
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="form-control-label col-md-2">Importance:</label>
+                <div class="col-md-10">
+                  <ul class="donate-now importance">
+                    <li>
+                      <input type="radio" id="important_for_meeting" name="importance_for_meeting" checked="checked"
+                        value="important" />
+                      <label for="important_for_meeting" style="color: red">Important</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="normal_for_meeting" name="importance_for_meeting" value="normal" />
+                      <label for="normal_for_meeting" style="color: blue">Normal</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="info_for_meeting" name="importance_for_meeting" value="info" />
+                      <label for="info_for_meeting" style="color: green">Info</label>
+                    </li>
+                    <li>
+                      <input type="radio" id="chill_for_meeting" name="importance_for_meeting" value="chill" />
+                      <label for="chill_for_meeting" style="color: purple">Chill</label>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="form-control-label col-md-2">Options:</label>
+                <div class="col-md-10">
+                  <div class="container1">
+                    <div class="options-form-fields">
+                      <div style="display:flex; margin-bottom:10px;">
+                        <input type="text" name="option_start_date" id="option_start_date_0" class="form-control"
+                          data-plugin="datepicker" style="width:120px" placeholder="Start Date">
+
+                        <input type="text" name="option_start_time" id="option_start_time_0" class="form-control"
+                          data-plugin="timepicker" style="width:100px; margin-left:10px;" placeholder="Start Time">
+
+                        <input type="text" name="option_end_date" id="option_end_date_0" class="form-control"
+                          data-plugin="datepicker" style="width:120px; margin-left:10px;" placeholder="End Date"
+                          margin-left:10px;>
+
+                        <input type="text" name="option_end_time" id="option_end_time_0" class="form-control"
+                          data-plugin="timepicker" style="width:100px; margin-left:10px;" placeholder="End Time">
+                      </div>
+                    </div>
+                    <button class="btn btn-primary" id="add_form_field">Add New Field &nbsp;
+                      <span style="font-size:16px; font-weight:bold;">+ </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="form-actions">
+                <button class="btn btn-primary" data-dismiss="modal" type="button" id="add-this-meeting">Add this
+                  meeting</button>
+                <a class="btn btn-sm btn-white" data-dismiss="modal" href="javascript:void(0)"
+                  id="cancel-button">Cancel</a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id='calendar'></div>
+
+
+    <div style='clear:both'></div>
+  </div>
+</body>
+</main>
+<sidebar>
+  <div class="logo">Meet Me</div>
+  <div class="avatar">
+    <div class="avatar__img">
+      <img src="https://picsum.photos/70" alt="avatar">
+    </div>
+    <div class="avatar__name">{{user.username}}</div>
+  </div>
+  <nav class="menu">
+    <a class="menu__item" href="{% url 'googleApi' %}">
+      <button class="btn btn-primary">Load Calender from Google</button>
+    </a>
+    <a class="menu__item" href="{% url 'profile' %}">
+      <i class="menu__icon fa fa-home"></i>
+      <span class="menu__text">Profile</span>
+    </a>
+    <a class="menu__item menu__item--active" href="#">
+      <i class="menu__icon fa fa-calendar"></i>
+      <span class="menu__text">Calendar</span>
+    </a>
+    <a class="menu__item" href="{% url 'mymeetings' %}">
+      <i class="menu__icon fa fa-bar-chart"></i>
+      <span class="menu__text">My Meetings</span>
+    </a>
+    <a class="menu__item" href="{% url 'logout' %}">
+      <i class="menu__icon fa fa-sliders"></i>
+      <span class="menu__item">
+        Logout
+      </span>
+    </a>
+  </nav>
+
+
+  <div class="copyright">copyright &copy; 2020</div>
+</sidebar>
+<script>
+
+  function closeModal() {
+    document.querySelector("#addNewEvent").classList.remove("show");
+    document.querySelector("#addNewEvent").style.display = "none";
+    document.querySelector("#addNewEvent").setAttribute("aria-hidden", "true");
+  }
+  document.querySelector("#close-button").addEventListener("click", closeModal);
+  document.querySelector("#cancel-button").addEventListener("click", closeModal);
+
+  document.querySelector("#new-event-toggle").addEventListener("click", () => {
+    document.querySelector("#event-form").style.display = "block";
+    document.querySelector("#meeting-form").style.display = "none";
+    document.querySelector("#new-meeting-toggle").classList.remove("modal-active");
+    document.querySelector("#new-event-toggle").classList.add("modal-active");
+  });
+
+  document.querySelector("#new-meeting-toggle").addEventListener("click", () => {
+    document.querySelector("#meeting-form").style.display = "block";
+    document.querySelector("#event-form").style.display = "none";
+    document.querySelector("#new-meeting-toggle").classList.add("modal-active");
+    document.querySelector("#new-event-toggle").classList.remove("modal-active");
+  });
+
+  $(document).ready(function () {
+    var max_fields = 10;
+    var wrapper = $(".container1");
+    var optionsContainer = $(".options-form-fields");
+    var add_button = $("#add_form_field");
+
+    var x = 1;
+    $(add_button).click(function (e) {
+      e.preventDefault();
+      if (x < max_fields) {
+        $(optionsContainer).append(`<div style="display:flex; margin-bottom:10px;">
+
+<input type="text" name="option_start_date" id="option_start_date_${x}" class="form-control"
+  data-plugin="datepicker" style="width:120px" placeholder="Start Date">
+
+<input type="text" name="option_start_time" id="option_start_time_${x}" class="form-control"
+  data-plugin="timepicker" style="width:100px; margin-left:10px;" placeholder="Start Time">
+
+<input type="text" name="option_end_date" id="option_end_date_${x}" class="form-control"
+  data-plugin="datepicker" style="width:120px; margin-left:10px;" placeholder="End Date"
+  margin-left:10px;>
+
+<input type="text" name="option_end_time" id="option_end_time_${x}" class="form-control"
+  data-plugin="timepicker" style="width:100px; margin-left:10px;" placeholder="End Time">
+
+</div>`);
+        x++;
+        $(function () {
+          $("input[data-plugin='datepicker']").datepicker();
+          $("input[data-plugin='datepicker']").datepicker("option", "dateFormat", "yy-mm-dd");
+          $("input[data-plugin='timepicker']").timepicker({});
+        });
+      } else {
+        alert('You Reached the limits')
+      }
+    });
+
+    $(wrapper).on("click", ".delete", function (e) {
+      e.preventDefault();
+      $(this).parent('div').remove();
+      x--;
+    })
+  });
+
+
+</script>
+
+</html>
